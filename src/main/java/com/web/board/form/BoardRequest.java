@@ -2,28 +2,22 @@ package com.web.board.form;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@Schema(description = "게시판 항목")
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class BoardRequest {
+
+@Schema(description = "게시판 항목 request")
+public record BoardRequest(
     @Schema(description = "게시판 Id")
-    public Long boardId;
+    Long boardId,
 
     @Schema(description = "제목")
     @NotBlank(message = "제목은 필수 입니다.")
-    public String title;
+    String title,
 
     @Schema(description = "내용")
     @NotBlank(message = "내용은 필수 입니다.")
-    public String content;
+    String content
+) {
+    public BoardRequest(String title, String content) {
+        this(null, title, content); // boardId는 null로 설정
+    }
 }

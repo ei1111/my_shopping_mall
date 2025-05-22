@@ -1,6 +1,7 @@
 package com.web.board.form;
 
 import com.web.board.domain.Board;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Schema(description = "게시판 response")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardResponse {
+    @Schema(name = "게시글 번호")
     public Long boardId;
+
+    @Schema(name = "게시글 제목")
     public String title;
+
+    @Schema(name = "게시글 내용")
     public String content;
+
+    @Schema(name = "게시글 순서")
     public int rowNum;
 
     public BoardResponse(Long boardId, String title, String content) {

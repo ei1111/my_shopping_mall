@@ -25,11 +25,7 @@ class BoardApiControllerTest {
 
     @BeforeEach
     public void setUp() {
-        board = Board.from(BoardRequest.builder()
-                .title("test title")
-                .content("test content")
-                .build()
-        );
+        board = Board.from(new BoardRequest("test title","test content" ));
     }
 
     @AfterEach

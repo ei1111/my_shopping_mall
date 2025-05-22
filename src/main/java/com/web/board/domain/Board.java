@@ -33,16 +33,16 @@ public class Board extends BaseEntity {
     private String content;
 
     public static Board from(BoardRequest boardRequest) {
-        return new Board(boardRequest.boardId, boardRequest.title, boardRequest.content);
+        return new Board(boardRequest.boardId(), boardRequest.title(), boardRequest.content());
     }
 
     public void updateForm(BoardRequest boardRequest) {
-        if(!Objects.equals(boardRequest.title, this.title)) {
-            this.title = boardRequest.title;
+        if(!Objects.equals(boardRequest.title(), this.title)) {
+            this.title = boardRequest.title();
         }
 
-        if(!Objects.equals(boardRequest.content, this.content)) {
-            this.content = boardRequest.content;
+        if(!Objects.equals(boardRequest.content(), this.content)) {
+            this.content = boardRequest.content();
         }
     }
 }

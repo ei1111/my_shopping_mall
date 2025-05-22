@@ -38,7 +38,7 @@ public class BoardService {
     @Transactional
     @Counted("my.board")
     public void update(BoardRequest boardRequest) {
-        Board board = findById(boardRequest.getBoardId());
+        Board board = findById(boardRequest.boardId());
         board.updateForm(boardRequest);
     }
 }
