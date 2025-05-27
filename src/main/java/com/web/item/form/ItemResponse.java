@@ -17,7 +17,7 @@ import lombok.Setter;
 public class ItemResponse {
 
     @Schema(name = "상품 번호")
-    private Long itemId;
+    private Long id;
 
     @Schema(name = "상품 이름")
     private String name;
@@ -38,7 +38,7 @@ public class ItemResponse {
     public Integer rowNum;
 
     private ItemResponse(Item item) {
-        this.itemId = item.getItemId();
+        this.id = item.getId();
         this.name = item.getName();
         this.price = item.getPrice();
         this.stockQuantity = item.getStockQuantity();
@@ -47,7 +47,7 @@ public class ItemResponse {
     }
 
     public static ItemResponse from(Item item, AtomicInteger rowNum) {
-        return new ItemResponse(item.getItemId(), item.getName(), item.getPrice(), item.getStockQuantity(), item.getAuthor(), item.getIsbn(), rowNum.getAndIncrement());
+        return new ItemResponse(item.getId(), item.getName(), item.getPrice(), item.getStockQuantity(), item.getAuthor(), item.getIsbn(), rowNum.getAndIncrement());
     }
 
     public static ItemResponse from(Item item) {

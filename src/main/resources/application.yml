@@ -4,6 +4,9 @@ spring:
     active: local
 ---
 spring:
+  #sql:
+   #init:
+    #mode: always
   config:
     activate:
       on-profile: local

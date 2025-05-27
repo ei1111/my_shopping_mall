@@ -4,30 +4,94 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/order" method="post">
-        <div class="form-group">
+    <form id="orderForm">
+        <div class="form-group mb-3">
             <label for="member">주문회원</label>
-            <select name="memberId" id="member" class="form-control">
+            <select id="member" class="form-control">
                 <option value="">회원선택</option>
-                <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.name}" />
             </select>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label for="item">상품명</label>
-            <select name="itemId" id="item" class="form-control"> <option value="">상품선택</option>
-                <option th:each="item : ${items}" th:value="${item.id}" th:text="${item.name}" />
+            <select id="item" class="form-control">
+                <option value="">상품선택</option>
             </select>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label for="count">주문수량</label>
-            <input type="number" name="count" class="form-control" id="count" placeholder="주문 수량을 입력하세요">
+            <input type="number" id="count" class="form-control" placeholder="주문 수량을 입력하세요" min="1">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">주문하기</button>
     </form>
+
     <br/>
     <div th:replace="fragments/footer :: footer" />
 
 </div> <!-- /container -->
+
+<script>
+    // 페이지 로드 시 회원과 상품 목록을 불러오기
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const [membersRes, itemsRes] = await Promise.all([
+                fetch("/members/v1/list"),
+                fetch("/items/v1/list")
+            ]);
+
+            const members = await membersRes.json();
+            const items = await itemsRes.json();
+
+            const memberSelect = document.getElementById("member");
+            members.forEach(member => {
+                const option = document.createElement("option");
+                option.value = member.id;
+                option.textContent = member.name;
+                memberSelect.appendChild(option);
+            });
+
+            const itemSelect = document.getElementById("item");
+            items.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.id;
+                option.textContent = item.name;
+                itemSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error("초기 데이터 로딩 실패:", error);
+            alert("회원 또는 상품 데이터를 불러오는 데 실패했습니다.");
+        }
+    });
+
+    // 폼 제출 시 주문 요청
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const memberId = parseInt(document.getElementById("member").value);
+        const itemId = parseInt(document.getElementById("item").value);
+        const count = parseInt(document.getElementById("count").value);
+
+        const orderData = { memberId, itemId, count };
+
+        try {
+            const response = await fetch("/orders/v1/new", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
+
+            if (response.ok) {
+                alert("주문이 완료되었습니다.");
+                document.getElementById("orderForm").reset();
+            } else {
+                const error = await response.text();
+                alert("주문 실패: " + error);
+            }
+        } catch (error) {
+            console.error("주문 요청 실패:", error);
+            alert("주문 요청 중 오류가 발생했습니다.");
+        }
+    });
+</script>
 </body>
 </html>
 

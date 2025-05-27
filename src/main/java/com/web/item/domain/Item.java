@@ -1,15 +1,17 @@
 package com.web.item.domain;
 
+
+import com.web.audit.BaseEntity;
+import com.web.error.errorCode.ErrorCode;
+import com.web.error.exception.BusinessException;
 import com.web.item.form.ItemRequest;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.function.Consumer;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,13 +20,13 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Item {
+@NoArgsConstructor
+public class Item extends BaseEntity {
     @Id
     @Comment( "상품 번호")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemId;
+    @Column(name = "item_id")
+    private Long id;
 
     @Comment( "상품 이름")
     private String name;
@@ -41,8 +43,16 @@ public class Item {
     @Comment( "상품 isbn")
     private String isbn;
 
+    private Item(ItemRequest request) {
+        this.name = request.name();
+        this.price = request.price();
+        this.stockQuantity = request.stockQuantity();
+        this.author = request.author();
+        this.isbn = request.isbn();
+    }
+
     public static Item from(ItemRequest request) {
-        return new Item(null, request.name(), request.price(), request.stockQuantity(), request.author(), request.isbn());
+        return new Item(request);
     }
 
     public void updateForm(ItemRequest request) {
@@ -57,5 +67,17 @@ public class Item {
         if (!Objects.equals(newValue, oldValue)) {
             consumer.accept(newValue);
         }
+    }
+
+    public void removeStock(int count) {
+        if (this.stockQuantity < count) {
+            throw new BusinessException(ErrorCode.ITEM_STOCK_NOT_ENOUGH);
+        }
+
+        this.stockQuantity -= count;
+    }
+
+    public void addStock(int count) {
+        this.stockQuantity += count;
     }
 }

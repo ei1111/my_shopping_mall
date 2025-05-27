@@ -1,0 +1,4 @@
+insert into member (city,street,zipcode,created_date,last_modified_date,name) values ('한국','도로','123',now(),now(),'홍길동');
+insert into item (author,created_by,created_date,isbn,last_modified_by,last_modified_date,name,price,stock_quantity) values ('저자','123',now(),'123','123',now(),'우유',1000,10);
+insert into item (author,created_by,created_date,isbn,last_modified_by,last_modified_date,name,price,stock_quantity) values ('저자','123',now(),'123','123',now(),'초코우유',2000,20);
+insert into item (author,created_by,created_date,isbn,last_modified_by,last_modified_date,name,price,stock_quantity) values ('저자','123',now(),'123','123',now(),'딸기우유',3000,30);

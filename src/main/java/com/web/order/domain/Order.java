@@ -1,0 +1,93 @@
+package com.web.order.domain;
+
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.web.audit.BaseEntity;
+import com.web.delivery.domain.Delivery;
+import com.web.delivery.domain.DeliveryStatus;
+import com.web.member.domain.Member;
+import com.web.orderItem.domain.OrderItem;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Entity
+@Table(name = "orders")
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Order extends BaseEntity {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "order_id")
+    private Long id;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @JsonIgnore
+    @OneToMany(fetch = LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
+
+    private LocalDate orderDate;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+   public void setOrderItems(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public static Order from(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order(member, delivery);
+
+        for (OrderItem orderItem : orderItems) {
+            order.setOrderItems(orderItem);
+        }
+
+        return order;
+    }
+
+    private Order(Member member , Delivery delivery) {
+        this.member = member;
+        this.delivery = delivery;
+        this.status = OrderStatus.ORDER;
+        this.orderDate = LocalDate.now();
+    }
+
+    public void cancel() {
+        for (OrderItem orderItem : orderItems) {
+            orderItem.canel();
+        }
+        this.status = OrderStatus.CANCEL;
+    }
+}

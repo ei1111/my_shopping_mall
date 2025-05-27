@@ -1,27 +1,37 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
+
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div> <div>
+
+  <!--  <div>
+        <div>
         <form th:object="${orderSearch}" class="form-inline">
             <div class="form-group mb-2">
                 <input type="text" th:field="*{memberName}" class="form- control" placeholder="회원명"/>
             </div>
             <div class="form-group mx-sm-1 mb-2">
                 <select th:field="*{orderStatus}" class="form-control"> <option value="">주문상태</option>
-                    <option th:each="status : ${T(study.datajpa.domain.OrderStatus).values()}" th:value="${status}"
-                            th:text="${status}">option
+                    <option th:each="status : ${T(study.datajpa.domain.OrderStatus).values()}" th:value="${status}" th:text="${status}">option
                     </option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary mb-2">검색</button> </form>
+            <button type="submit" class="btn btn-primary mb-2">검색</button>
+        </form>
     </div>
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>#</th> <th>회원명</th> <th>대표상품 이름</th> <th>대표상품 주문가격</th> <th>대표상품 주문수량</th> <th>상태</th> <th>일시</th> <th></th>
+                <th>#</th>
+                <th>회원명</th>
+                <th>대표상품 이름</th>
+                <th>대표상품 주문가격</th>
+                <th>대표상품 주문수량</th>
+                <th>상태</th>
+                <th>일시</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -41,16 +51,97 @@
             </tr>
             </tbody>
         </table>
+    </div>-->
+
+    <div>
+        <div>
+            <form id="searchForm" class="form-inline">
+                <div class="form-group mb-2">
+                    <input type="text" id="memberName" class="form-control" placeholder="회원명" />
+                </div>
+                <div class="form-group mx-sm-1 mb-2">
+                    <select id="orderStatus" class="form-control">
+                        <option value="">주문상태</option>
+                        <option value="ORDER">ORDER</option>
+                        <option value="CANCEL">CANCEL</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">검색</button>
+            </form>
+        </div>
+
+        <table class="table table-striped">
+            <colgroup>
+                <col style="width: 50px;">
+                <col style="width: 150px;">
+                <col style="width: 200px;">
+                <col style="width: 250px;">
+                <col style="width: 250px;">
+                <col style="width: 100px;">
+                <col style="width: 250px;">
+                <col style="width: 80px;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>no</th>
+                <th>회원명</th>
+                <th>상품명</th>
+                <th>주문가격</th>
+                <th>주문수량</th>
+                <th>상태</th>
+                <th>일시</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="orderTableBody">
+            </tbody>
+        </table>
     </div>
+
+
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 <script>
-    function cancel(id) {
-        var form = document.createElement("form");
-        form.setAttribute("method", "post");
-        form.setAttribute("action", "/orders/" + id + "/cancel");
-        document.body.appendChild(form);
-        form.submit();
-    } </script>
+    document.getElementById('searchForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const memberName = document.getElementById('memberName').value;
+        const orderStatus = document.getElementById('orderStatus').value;
+
+        const res = await fetch(`/orders/v1/list?memberName=${memberName}&orderStatus=${orderStatus}`);
+        const orders = await res.json();
+
+        const tbody = document.getElementById('orderTableBody');
+        tbody.innerHTML = '';
+        orders.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.memberName}</td>
+            <td>${item.orderItems[0]?.itemName ?? ''}</td>
+            <td>${item.orderItems[0]?.orderPrice ?? ''}</td>
+            <td>${item.orderItems[0]?.count ?? ''}</td>
+            <td>${item.status}</td>
+            <td>${item.orderDate}</td>
+            <td>
+                ${item.status === 'ORDER' ? `<button class="btn btn-danger" onclick="cancelOrder(${item.id})">CANCEL</button>` : ''}
+            </td>
+        `;
+            tbody.appendChild(row);
+        });
+    });
+
+    async function cancelOrder(orderId) {
+        if (!confirm('정말 취소하시겠습니까?')) return;
+        await fetch(`/orders/v1/${orderId}/cancel`, {
+            method: 'POST'
+        });
+        alert('주문이 취소되었습니다.');
+        document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+    });
+</script>
 </html>

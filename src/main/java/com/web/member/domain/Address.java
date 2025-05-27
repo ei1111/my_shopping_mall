@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Address {
 
     private String city;
@@ -18,6 +17,7 @@ public class Address {
     private String street;
 
     private String zipcode;
+
 
     public Address(MemberRequest request) {
         this.city = request.city();
