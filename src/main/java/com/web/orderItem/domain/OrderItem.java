@@ -51,6 +51,6 @@ public class OrderItem {
     }
 
     public void canel() {
-        item.addStock(count);
+        getItem().addStock(this.count);
     }
 }

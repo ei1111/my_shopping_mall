@@ -70,7 +70,9 @@ public class Item extends BaseEntity {
     }
 
     public void removeStock(int count) {
-        if (this.stockQuantity < count) {
+        int reultStock = this.stockQuantity - count;
+
+        if (reultStock < 0) {
             throw new BusinessException(ErrorCode.ITEM_STOCK_NOT_ENOUGH);
         }
 
