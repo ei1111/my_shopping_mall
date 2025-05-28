@@ -1,19 +1,13 @@
 package com.web.member.domain;
 
-import com.web.audit.BaseEntity;
 import com.web.audit.BaseTimeEntity;
 import com.web.member.form.MemberRequest;
-import com.web.order.domain.Order;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
