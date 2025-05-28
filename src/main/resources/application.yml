@@ -41,6 +41,11 @@ server:
 logging:
   level:
     root: INFO
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha  # 태그 이름 기준 알파벳(숫자 포함) 정렬
+
 ---
 spring:
   config:

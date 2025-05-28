@@ -8,6 +8,7 @@ import com.web.order.form.OrderSearchRequest;
 import com.web.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders/v1")
-@Tag(name = "주문 API")
+@Tag(name = "3. 주문 API")
 public class OrderApiController {
 
     private final OrderService orderService;
@@ -30,10 +31,7 @@ public class OrderApiController {
 
     @PostMapping("/new")
     @Operation(summary = "주문 정보 등록 API")
-    public void order(@RequestBody OrderRequest request) {
-        System.out.println("request.itemId() = " + request.itemId());
-        System.out.println("request.memberId() = " + request.memberId());
-        System.out.println("request.count() = " + request.count());
+    public void order(@Valid @RequestBody OrderRequest request) {
         orderService.order(request.memberId(), request.itemId(), request.count());
     }
 

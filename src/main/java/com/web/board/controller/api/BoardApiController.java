@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/board/v1")
-@Tag(name = "게시판 CRUD API")
+@Tag(name = "4. 게시판 API")
 public class BoardApiController {
 
     private final BoardService boardService;

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items/v1")
-@Tag(name = "상품 API")
+@Tag(name = "2. 상품 API")
 public class ItemApiController {
     private final ItemSerivce itemSerivce;
 
