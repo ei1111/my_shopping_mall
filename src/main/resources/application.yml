@@ -46,6 +46,9 @@ springdoc:
   swagger-ui:
     tags-sorter: alpha  # 태그 이름 기준 알파벳(숫자 포함) 정렬
 
+slack:
+  webhook:
+    url: https://hooks.slack.com/services/slackaddress
 ---
 spring:
   config:

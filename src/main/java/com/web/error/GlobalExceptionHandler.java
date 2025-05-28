@@ -3,6 +3,8 @@ package com.web.error;
 
 import com.web.error.errorResponse.ErrorResponse;
 import com.web.error.exception.BusinessException;
+import com.web.notifier.SlackNotifier;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @Slf4j
 /*RestController에서 발생하는 예외들을 처리*/
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
-
+    private final SlackNotifier slackNotifier;
     /**
      * javax.validation.Valid 또는 @Validated binding error가 발생할 경우
      * 검증을 통과하지 못하면 bindException 예외
@@ -54,12 +57,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
     }
 
+
     /**
      * 나머지 예외 발생
      */
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         ErrorResponse errorResponse = ErrorResponse.of(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage());
+        /*슬랙으로 메서지 전송*/
+        //slackNotifier.sendSlackMessage(e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
