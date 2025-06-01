@@ -10,6 +10,9 @@ import com.web.order.form.OrderResponse;
 import com.web.order.form.OrderSearchRequest;
 import com.web.order.repository.OrderRepository;
 import com.web.orderItem.domain.OrderItem;
+import com.web.payment.domain.Payment;
+import com.web.payment.repository.PaymentRepository;
+import com.web.payment.service.PaymentService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,10 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
     private final MemberRepository memberRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
 
     @Transactional
@@ -40,12 +44,17 @@ public class OrderService {
 
     public List<OrderResponse> orderSearch(OrderSearchRequest request) {
         return orderRepository.orderSearch(request);
-
     }
 
     @Transactional
     public void cancel(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         order.cancel();
+
+        paymentRepository.findByOrder(order)
+                .map(Payment::getImpUid)
+                .ifPresent(impUid -> {
+                    paymentService.cancel(impUid);
+                });
     }
 }

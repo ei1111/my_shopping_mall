@@ -18,7 +18,11 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - '9090:9090'
-
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    restart: always
+    ports:
+      - '9091:9091'
   grafana:
     image: grafana/grafana:6.0.2
     restart: always

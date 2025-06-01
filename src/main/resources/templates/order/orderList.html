@@ -1,58 +1,21 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
-
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 포트원 결제 -->
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- iamport.payment.js -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    <!-- 포트원 결제 -->
+</head>
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
-  <!--  <div>
-        <div>
-        <form th:object="${orderSearch}" class="form-inline">
-            <div class="form-group mb-2">
-                <input type="text" th:field="*{memberName}" class="form- control" placeholder="회원명"/>
-            </div>
-            <div class="form-group mx-sm-1 mb-2">
-                <select th:field="*{orderStatus}" class="form-control"> <option value="">주문상태</option>
-                    <option th:each="status : ${T(study.datajpa.domain.OrderStatus).values()}" th:value="${status}" th:text="${status}">option
-                    </option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary mb-2">검색</button>
-        </form>
-    </div>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>회원명</th>
-                <th>대표상품 이름</th>
-                <th>대표상품 주문가격</th>
-                <th>대표상품 주문수량</th>
-                <th>상태</th>
-                <th>일시</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${orders}">
-                <td th:text="${item.id}"></td>
-                <td th:text="${item.member.name}"></td>
-                <td th:text="${item.orderItems[0].item.name}"></td>
-                <td th:text="${item.orderItems[0].orderPrice}"></td>
-                <td th:text="${item.orderItems[0].count}"></td>
-                <td th:text="${item.status}"></td>
-                <td th:text="${item.orderDate}"></td>
-                <td>
-                    <a th:if="${item.status.name() == 'ORDER'}" href="#"
-                       th:href="'javascript:cancel('+${item.id}+')'"
-                       class="btn btn-danger">CANCEL</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>-->
-
     <div>
         <div>
             <form id="searchForm" class="form-inline">
@@ -71,16 +34,6 @@
         </div>
 
         <table class="table table-striped">
-            <colgroup>
-                <col style="width: 50px;">
-                <col style="width: 150px;">
-                <col style="width: 200px;">
-                <col style="width: 250px;">
-                <col style="width: 250px;">
-                <col style="width: 100px;">
-                <col style="width: 250px;">
-                <col style="width: 80px;">
-            </colgroup>
             <thead>
             <tr>
                 <th>no</th>
@@ -90,6 +43,7 @@
                 <th>주문수량</th>
                 <th>상태</th>
                 <th>일시</th>
+                <th></th>
                 <th></th>
             </tr>
             </thead>
@@ -116,7 +70,8 @@
         orders.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
-            <td>${item.id}</td>
+            <input type="hidden" id="orderId" value="${item.id}" />
+            <td>1</td>
             <td>${item.memberName}</td>
             <td>${item.orderItems[0]?.itemName ?? ''}</td>
             <td>${item.orderItems[0]?.orderPrice ?? ''}</td>
@@ -124,7 +79,10 @@
             <td>${item.status}</td>
             <td>${item.orderDate}</td>
             <td>
-                ${item.status === 'ORDER' ? `<button class="btn btn-danger" onclick="cancelOrder(${item.id})">CANCEL</button>` : ''}
+                ${item.status === 'ORDER' ? `<button id="payment-button" class="btn btn-success mb-2" onclick="paymentProcess(${item.id}, '${item.memberName}','${item.orderItems[0]?.itemName}', ${item.orderItems[0]?.orderPrice}, ${item.orderItems[0]?.count})">구매하기</button>` : ''}
+            </td>
+             <td>
+                ${item.status === 'ORDER' ? `<button class="btn btn-danger" onclick="cancelOrder(${item.id})">취소</button>` : ''}
             </td>
         `;
             tbody.appendChild(row);
@@ -144,4 +102,5 @@
         document.getElementById('searchForm').dispatchEvent(new Event('submit'));
     });
 </script>
+<script type="text/javascript" th:src="@{/js/payment.js}"></script>
 </html>

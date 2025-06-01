@@ -10,6 +10,7 @@ import com.web.delivery.domain.Delivery;
 import com.web.delivery.domain.DeliveryStatus;
 import com.web.member.domain.Member;
 import com.web.orderItem.domain.OrderItem;
+import com.web.payment.domain.Payment;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,6 +62,9 @@ public class Order extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    @OneToOne(fetch = LAZY, mappedBy = "order")
+    private Payment payment;
 
    public void setOrderItems(OrderItem orderItem) {
         orderItems.add(orderItem);
