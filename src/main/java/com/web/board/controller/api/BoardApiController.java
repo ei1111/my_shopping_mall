@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
@@ -38,7 +39,8 @@ public class BoardApiController {
     }
 
     @GetMapping("/form")
-    @Operation(summary = "게시판 글 조회 API")
+    @Operation(summary = "게시판 글 세부 조회 API")
+    @Cacheable(cacheNames = "boardContent",   key = "#boardId",  cacheManager = "cacheManager")
     public BoardResponse form(@RequestParam(required = false) @Parameter(example = "1") Long boardId) {
         return findBoardResponseOrDefault(boardId);
     }

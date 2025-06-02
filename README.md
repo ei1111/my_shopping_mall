@@ -8,12 +8,14 @@
 ### H2
 ### Prometheus
 ### Grafana
+### Redis
+### PortOne
 ### logback
 ### k6
 ### Swagger
-### Slack Webhook(추후 해야 함)
-### Slack Webhook(Alertmanager, 추후 해야 함)
+### Slack Webhook
 ___
 ## 로직
 swagger로 테스트 할 수 있습니다.<br>
+상품을 주문, 결제, 취소 할 수 있습니다. <br>
 게시판 글 등록 및 목록을 볼 수 있습니다.
