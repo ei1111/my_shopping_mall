@@ -24,10 +24,10 @@ public class PaymentClient {
 
     private final RestClient restClient;
 
-    @Value("${payment.imp.key}")
+    @Value("${PAYMENT_IMP_KEY}")
     private String impKey;
 
-    @Value("${payment.imp.secret}")
+    @Value("${PAYMENT_IMP_SECRET}")
     private String impSecret;
 
     private static final String BASE_URL = "https://api.iamport.kr";
