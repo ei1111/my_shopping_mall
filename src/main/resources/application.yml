@@ -55,6 +55,12 @@ springdoc:
 slack:
   webhook:
     url: https://hooks.slack.com/services/slackaddress
+
+payment:
+  imp:
+    key: ${PAYMENT_IMP_KEY}
+    secret: ${PAYMENT_IMP_SECRET}
+
 ---
 spring:
   config:

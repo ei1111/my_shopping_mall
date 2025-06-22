@@ -80,6 +80,9 @@ dependencies {
 
 	/*Redis*/
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	/*EnvFile*/
+	implementation 'io.github.cdimascio:dotenv-java:2.2.4'
 }
 
 tasks.named('test') {
